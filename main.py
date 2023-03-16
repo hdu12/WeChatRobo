@@ -13,17 +13,21 @@ who = '文件传输助手'
 # 获取会话列表
 wx.GetSessionList()
 
+#使用Emoji对于标题美化
 emoji = emoji.emojize(":gift_heart:",language='alias') + "05机器人" + emoji.emojize(":gift_heart:",language='alias')
+
+#读取最新消息以及反馈主函数
 def hello():
-    #获取当前消息
+#获取当前消息
     msgs = wx.GetAllMessage
-#for msg in msgs:
-#    print('%s : %s'%(msg[0], msg[1]))
+    
+#设置发送消息为空字符串
     sendAll=""
-#最新的一条消息
+#读取最新的一条消息
     msg = msgs[-1]
-#只获取消息内容
+#只获取消息内容本身
     msg=msg[1]
+
 #连接数据库
     conn = sqlite3.connect('测试.db')
     cursor = conn.cursor()
@@ -97,10 +101,12 @@ def hello2():
     wx.SendClipboard()  
     conn.close()        
 
+#线程启动
 def run_threaded(job_func):
     job_thread = threading.Thread(target=job_func)
     job_thread.start()
 
+#定时循环
 schedule.every(3).seconds.do(run_threaded, hello)
 schedule.every().day.at("08:30").do(run_threaded,hello2)
 while True:
