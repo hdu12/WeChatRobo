@@ -3,7 +3,9 @@ import requests
 import json
 def weather_ref():         
       locat="121.47,31.23"
-      url = 'https://api.caiyunapp.com/v2.6/ozKncuEwWzviMSxp/{}/daily.json'.format(locat)
+      apikey = ''
+      url = f'https://api.caiyunapp.com/v2.6/{apikey}/{locat}/daily.json'
+
       city ="上海"
       response = requests.get(url)
       weather_data = json.loads(response.content.decode())
@@ -17,11 +19,12 @@ def weather_ref():
       return(sendAll)
 
 def weather_real():
+   locat="121.47,31.23"
       # 填入你的开发者密钥
-   apikey = 'ozKncuEwWzviMSxp'
+   apikey = ''
    city ="上海"
 # 拼接API请求URL
-   url = f'https://api.caiyunapp.com/v2.6/{apikey}/121.47,31.23/weather'
+   url = f'https://api.caiyunapp.com/v2.6/{apikey}/{locat}/weather'
 
 # 发送GET请求获取响应数据
    response = requests.get(url)
