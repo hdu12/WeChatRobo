@@ -1,11 +1,13 @@
 from wxauto import *
 from weather_ref import *
 from function import *
+from chat import *
 import threading
 import sqlite3
 import emoji
 import schedule
 import time
+
 
 
 
@@ -28,6 +30,7 @@ def hello():
     msg = msgs[-1]
 #只获取消息内容本身
     msg=msg[1]
+    sender = msg[0]
 #进行判断
     if msg.find(" mark") != -1:   
        with sqlite3.connect('测试.db') as conn:
@@ -49,7 +52,13 @@ def hello():
         sendAll = weather_real()
 
     elif msg =="weatherr":
-        sendAll = weather_ref()       
+        sendAll = weather_ref()     
+
+    elif msg.find("Chat ") != -1:        
+           WxUtils.SetClipboard("处理中，请稍等")    # 将内容复制到剪贴板，类似于Ctrl + C
+           wx.ChatWith(who)
+           wx.SendClipboard()
+           sendAll = ask_gpt(msg)   
 
     if len(sendAll)!=0:
       sendAll = emoji + sendAll
@@ -64,6 +73,11 @@ def hello2():
            WxUtils.SetClipboard(dailysend)    # 将内容复制到剪贴板，类似于Ctrl + C
            wx.ChatWith(who)                 # 打开`文件传输助手`聊天窗口
            wx.SendClipboard()         
+def hello3():
+    text = weather_ref()
+    WxUtils.SetClipboard(text)    # 将内容复制到剪贴板，类似于Ctrl + C
+    wx.ChatWith(who)                 # 打开`文件传输助手`聊天窗口
+    wx.SendClipboard()  
 
 #线程启动
 def run_threaded(job_func):
@@ -71,9 +85,9 @@ def run_threaded(job_func):
     job_thread.start()
 
 #定时循环
-schedule.every(5).seconds.do(run_threaded, hello)
+schedule.every(4).seconds.do(run_threaded, hello)
 schedule.every().day.at("08:30").do(run_threaded,hello2)
-schedule.every().day.at("08:25").do(run_threaded,weather_ref)
+schedule.every().day.at("08:25").do(run_threaded,hello3)
 #schedule.every(20).seconds.do(run_threaded,hello2)
 while True:
     schedule.run_pending()
